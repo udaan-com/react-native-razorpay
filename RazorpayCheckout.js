@@ -4,8 +4,7 @@ import {NativeModules, NativeEventEmitter} from 'react-native';
 
 const razorpayEvents = (NativeModules !== null) ? new NativeEventEmitter(NativeModules.RazorpayEventEmitter) : undefined;
 
-const removeSubscriptions = () =
->
+const removeSubscriptions = () =>
 {
     razorpayEvents.removeAllListeners('Razorpay::PAYMENT_SUCCESS');
     razorpayEvents.removeAllListeners('Razorpay::PAYMENT_ERROR');
@@ -30,7 +29,7 @@ class RazorpayCheckout {
                 NativeModules.RazorpayCheckout.open(options);
             });
         } else {
-            return undefined;
+            return Promise.reject("Native Modules is null hence cannot proceed");
         }
     }
 
@@ -40,6 +39,8 @@ class RazorpayCheckout {
                 externalWalletCallback(data);
                 removeSubscriptions();
             });
+        } else {
+            return Promise.reject("Native Modules is null hence cannot proceed");
         }
     }
 }
