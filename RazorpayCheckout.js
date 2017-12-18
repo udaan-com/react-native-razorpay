@@ -1,18 +1,19 @@
 'use strict';
 
-import {NativeModules, NativeEventEmitter} from 'react-native';
+import {NativeEventEmitter, NativeModules, Platform} from 'react-native';
 
-const razorpayEvents = (NativeModules !== undefined &&
-    NativeModules !== null &&
-    NativeModules.RazorpayEventEmitter !== undefined &&
-    NativeModules.RazorpayEventEmitter !== null) ? new NativeEventEmitter(NativeModules.RazorpayEventEmitter) : undefined;
+const razorpayEvents = (Platform.OS === 'ios') ?
+    (NativeModules !== undefined &&
+        NativeModules !== null &&
+        NativeModules.RazorpayEventEmitter !== undefined &&
+        NativeModules.RazorpayEventEmitter !== null) ? new NativeEventEmitter(NativeModules.RazorpayEventEmitter) : undefined
+    : new NativeEventEmitter(NativeModules.RazorpayEventEmitter);
 
-const removeSubscriptions = () =>
-{
-    razorpayEvents.removeAllListeners('Razorpay::PAYMENT_SUCCESS');
-    razorpayEvents.removeAllListeners('Razorpay::PAYMENT_ERROR');
-    razorpayEvents.removeAllListeners('Razorpay::EXTERNAL_WALLET_SELECTED');
-}
+const removeSubscriptions = () => {
+        razorpayEvents.removeAllListeners('Razorpay::PAYMENT_SUCCESS');
+        razorpayEvents.removeAllListeners('Razorpay::PAYMENT_ERROR');
+        razorpayEvents.removeAllListeners('Razorpay::EXTERNAL_WALLET_SELECTED');
+    }
 ;
 
 class RazorpayCheckout {
